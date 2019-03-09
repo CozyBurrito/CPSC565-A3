@@ -62,4 +62,9 @@ public class HexMesh : MonoBehaviour {
 		colors.Add(color);
 		colors.Add(color);
 	}
+
+	public void disableMesh()
+	{
+		meshCollider.enabled = false;
+	}
 }
