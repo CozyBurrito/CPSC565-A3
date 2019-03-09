@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class HexGrid : MonoBehaviour
 {
 
-    static public Color[] colors = { Color.white, Color.blue, Color.green, Color.yellow };
+    static public Color[] colors = { Color.white, Color.blue, Color.green, Color.yellow, Color.black };
     public int width = 6;
     public int height = 6;
 
@@ -82,6 +82,8 @@ public class HexGrid : MonoBehaviour
                     c = colors[2];
                 else if (gridColouringStr[i] == 'Y')
                     c = colors[3];
+                else if (gridColouringStr[i] == 'K')
+                    c = colors[4];
 
                 CreateCell(x, z, i++, c);
             }
@@ -104,7 +106,7 @@ public class HexGrid : MonoBehaviour
 
         for (int i = 0; i < (width * height); i++)
         {
-            Color c = colors[(int)Random.Range(0, colors.Length)];
+            Color c = randColor();
 
             if (c.Equals(Color.white))
                 gridColours += "W";
@@ -114,6 +116,8 @@ public class HexGrid : MonoBehaviour
                 gridColours += "G";
             else if (c.Equals(Color.yellow))
                 gridColours += "Y";
+            else if (c.Equals(Color.black))
+                gridColours += "K";
         }
 
 		gridColouringStr = gridColours;
@@ -149,4 +153,90 @@ public class HexGrid : MonoBehaviour
 		isSet = this.gameObject.GetComponentInParent<EvolutionManager>().setSelectedHexGrid(this.id);
 	}
 
+    // This function is used to mutate the colouring for each cell in the HexGrid
+    public void mutateGridColouring(string parentGridColours, float mutationChance)
+    {
+        string gridColours = "";
+
+        for (int i = 0; i < parentGridColours.Length; i++)
+        {
+            if(Random.value <= mutationChance)
+            {
+                Color c = randColor();
+
+                if (c.Equals(Color.white))
+                    gridColours += "W";
+                else if (c.Equals(Color.blue))
+                    gridColours += "B";
+                else if (c.Equals(Color.green))
+                    gridColours += "G";
+                else if (c.Equals(Color.yellow))
+                    gridColours += "Y";
+                else if (c.Equals(Color.black))
+                    gridColours += "K";
+            }
+            else
+            {
+                gridColours += parentGridColours[i];
+            }
+
+        }
+
+		gridColouringStr = gridColours;
+    }
+
+    // This function is used to crossover the colouring for each cell in the HexGrid
+    // The crossover picks the cell color randomly from the first or second parent, for each cell
+    public void crossoverGridColouring(string parentGridColours1, string parentGridColours2)
+    {
+        string gridColours = "";
+        bool selParent = Random.value <= 0.5f ? true : false;
+
+        for (int i = 0; i < parentGridColours1.Length; i++)
+        {
+            if(selParent)
+                gridColours += parentGridColours1[i];
+            else
+                gridColours += parentGridColours2[i];
+
+            selParent = Random.value <= 0.5f ? true : false;
+
+        }
+
+		gridColouringStr = gridColours;
+    }
+
+    public int countColor(char color)
+    {
+        int colorCount = 0;
+
+        for (int i = 0; i < gridColouringStr.Length; i++)
+        {
+            if(gridColouringStr[i] == color)
+                colorCount++;
+
+        }
+
+        return colorCount;
+    }
+
+    public Color randColor()
+    {
+        Color c = defaultColor;
+
+        float v = Random.value;
+
+        if (v < 0.225f)
+            c = colors[0];
+        else if (v < 0.45f)
+            c = colors[1];
+        else if (v < 0.675f)
+            c = colors[2];
+        else if (v < 0.9f)
+            c = colors[3];
+        else
+            c = colors[4];
+
+        return c;
+    }
 }
