@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class HexGrid : MonoBehaviour
 {
 
+    // added black
     static public Color[] colors = { Color.white, Color.blue, Color.green, Color.yellow, Color.black };
     public int width = 6;
     public int height = 6;
@@ -123,6 +124,7 @@ public class HexGrid : MonoBehaviour
 		gridColouringStr = gridColours;
     }
 
+    // makes the hexgrid appear highlighted
 	public void highlight()
 	{
 		float x = this.transform.position.x;
@@ -132,6 +134,7 @@ public class HexGrid : MonoBehaviour
 		
 	}
 
+    // removes the highlighting of the hexgrid
 	public void unHighlight()
 	{
 		float x = this.transform.position.x;
@@ -149,6 +152,7 @@ public class HexGrid : MonoBehaviour
 			unHighlight();
 	}
 
+    // attempt to set it
 	private void OnMouseDown() {
 		isSet = this.gameObject.GetComponentInParent<EvolutionManager>().setSelectedHexGrid(this.id);
 	}
@@ -206,6 +210,7 @@ public class HexGrid : MonoBehaviour
 		gridColouringStr = gridColours;
     }
 
+    // counts the occurence of a particular color in the gridColouringStr
     public int countColor(char color)
     {
         int colorCount = 0;
@@ -220,6 +225,8 @@ public class HexGrid : MonoBehaviour
         return colorCount;
     }
 
+    // used to select a random color, based on predefined probabilities
+    // black chance is 10%, rest are 22.5%
     public Color randColor()
     {
         Color c = defaultColor;

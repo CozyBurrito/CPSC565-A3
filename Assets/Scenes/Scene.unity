@@ -415,7 +415,7 @@ MonoBehaviour:
   numCross: 4
   numRand: 2
   mutationChance: 0.1
-  screenShot: 1
+  screenShot: 0
 --- !u!4 &607389828
 Transform:
   m_ObjectHideFlags: 0

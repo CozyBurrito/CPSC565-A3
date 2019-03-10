@@ -33,6 +33,7 @@ public class EvolutionManager : MonoBehaviour
     public Text selHexGrid1Text;
     public Text selHexGrid2Text;
 
+    // the number of each to mutate
     public int numMutate = 8;
     public int numCross = 4;
     public int numRand = 2;
@@ -46,16 +47,17 @@ public class EvolutionManager : MonoBehaviour
         selHexGrid1 = -1;
         selHexGrid2 = -1;
         isSelectionMode = false;
-
-        // Initialize first generation 
+        
         hexGridsGen = new List<HexGrid>();
         hexGridsGens = new List<List<HexGrid>>();
         hexGridsGens.Add(hexGridsGen);
 
+        // Initialize first generation 
         createHexGrids(true);
         
     }
 
+    // mostly visual
     private void Update() {
         if(selHexGrid1 != -1 && selHexGrid2 != -1)
         {
@@ -111,17 +113,21 @@ public class EvolutionManager : MonoBehaviour
                     continue;
                 }
 
+                // For new hexgrid
                 HexGrid h = Instantiate(hexGridPrefab);
                 h.transform.SetPositionAndRotation(new Vector3(x, 0f, z), Quaternion.identity);
                 h.name = "Hex Grid " + hexGridsGen.Count;
                 h.transform.SetParent(this.gameObject.transform);
 
+                // this creates the string of colours for the hexgrid 
+                // if its the initial gen, randomize it
                 if (initialRand)
                 {
                     h.randomizeGridColouring();
                 }
                 else
                 {
+                    // mutate them alternating parents
                     if(numMutate > 0)
                     {
                         if(numMutate % 2 == 0)
@@ -131,11 +137,13 @@ public class EvolutionManager : MonoBehaviour
 
                         numMutate--;
                     }
+                    // crossover 
                     else if(numCross > 0)
                     {
                         h.crossoverGridColouring(selectedHexGrid1.gridColouringStr, selectedHexGrid2.gridColouringStr);
                         numCross--;
                     }
+                    // random ones
                     else if(numRand > 0)
                     {
                         h.randomizeGridColouring();
@@ -148,6 +156,7 @@ public class EvolutionManager : MonoBehaviour
                         
                 }
 
+                // this actually creates the hexgrid
                 h.createHexGridFromString(hexGridsGen.Count);
 
                 hexGridsGen.Add(h);
@@ -159,6 +168,7 @@ public class EvolutionManager : MonoBehaviour
             z -= 150f;
         }
 
+        // reset for the next generation
         genNum++;
         numMutate = 8;
         numCross = 4;
@@ -168,6 +178,7 @@ public class EvolutionManager : MonoBehaviour
             ScreenCapture.CaptureScreenshot("Screenshots\\gen_" + genNum + ".png");
     }
 
+    // This is mostly to make it visually appealling
     public void toggleSelectionMode()
     {
         isSelectionMode = !isSelectionMode;
@@ -186,6 +197,7 @@ public class EvolutionManager : MonoBehaviour
         }
     }
 
+    // This is used to set a hexgrid as one of the selected hexgrids if possible
     public bool setSelectedHexGrid(int hexGridId)
     {
         if(isSelectionMode)
@@ -218,6 +230,8 @@ public class EvolutionManager : MonoBehaviour
         return false;
     }
 
+    // this is called from the button
+    // this is used to create a new list of hexgrids and destroy the old ones, but keep the selected ones
     public void createNextGen()
     {
         selectedHexGrid1 = hexGridsGen[selHexGrid1];
